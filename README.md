@@ -1,0 +1,2 @@
+# iodkopasdjadjasdjadads
+cut ngay
