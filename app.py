@@ -11,7 +11,7 @@ if not os.path.exists(DATA_FILE):
     with open(DATA_FILE, 'w') as f:
         json.dump({"total": 0, "history": []}, f)
 
-# Endpoint để TĂNG số (quan trọng!)
+# Endpoint để TĂNG số (ẩn - chỉ ai biết link mới dùng được)
 @app.route('/oicaiditnhauxaorau', methods=['POST'])
 def track():
     with open(DATA_FILE, 'r+') as f:
@@ -32,7 +32,7 @@ def track():
         "by": "kuri"
     })
 
-# Endpoint xem số liệu dạng JSON
+# Endpoint xem số liệu dạng JSON (ẩn)
 @app.route('/kpi', methods=['GET'])
 def stats():
     with open(DATA_FILE, 'r') as f:
@@ -43,7 +43,7 @@ def stats():
         "by": "kuri"
     })
 
-# Dashboard đẹp + nút xóa (ẩn danh)
+# Dashboard + nút xóa (ẩn - chỉ mình bạn biết)
 @app.route('/phuonganh', methods=['GET', 'POST'])
 def phuonganh():
     with open(DATA_FILE, 'r') as f:
@@ -133,19 +133,10 @@ def phuonganh():
     </html>
     """
 
+# Trang chủ - KHÔNG HIỂN THỊ GÌ CẢ (giả vờ như không có API)
 @app.route('/', methods=['GET'])
 def home():
-    with open(DATA_FILE, 'r') as f:
-        data = json.load(f)
-    return jsonify({
-        "message": "Tracking API is running!",
-        "endpoints": {
-            "ditmemay soi cai del j?",
-            "/stats": "View total executions cua hub bo"
-        },
-        "current_total": data['total'],
-        "by": "kuri"
-    })
+    return "hi,what are u doing here,nigger?", 404
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 10000)))
