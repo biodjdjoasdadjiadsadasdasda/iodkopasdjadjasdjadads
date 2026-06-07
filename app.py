@@ -12,7 +12,7 @@ if not os.path.exists(DATA_FILE):
         json.dump({"total": 0, "history": []}, f)
 
 # Endpoint để TĂNG số (quan trọng!)
-@app.route('/track', methods=['POST'])
+@app.route('/oicaiditnhauxaorau', methods=['POST'])
 def track():
     with open(DATA_FILE, 'r+') as f:
         data = json.load(f)
@@ -33,7 +33,7 @@ def track():
     })
 
 # Endpoint xem số liệu dạng JSON
-@app.route('/stats', methods=['GET'])
+@app.route('/kpi', methods=['GET'])
 def stats():
     with open(DATA_FILE, 'r') as f:
         data = json.load(f)
