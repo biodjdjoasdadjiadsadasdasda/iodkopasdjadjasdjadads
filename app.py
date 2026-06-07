@@ -11,6 +11,28 @@ if not os.path.exists(DATA_FILE):
     with open(DATA_FILE, 'w') as f:
         json.dump({"total": 0, "history": []}, f)
 
+# Endpoint để TĂNG số (quan trọng!)
+@app.route('/track', methods=['POST'])
+def track():
+    with open(DATA_FILE, 'r+') as f:
+        data = json.load(f)
+        data['total'] += 1
+        data['history'].append({
+            "time": datetime.now().isoformat(),
+            "ip": request.remote_addr
+        })
+        if len(data['history']) > 100:
+            data['history'] = data['history'][-100:]
+        f.seek(0)
+        json.dump(data, f)
+        f.truncate()
+    return jsonify({
+        "Total Execute": data['total'], 
+        "status": "success",
+        "by": "kuri"
+    })
+
+# Endpoint xem số liệu dạng JSON
 @app.route('/stats', methods=['GET'])
 def stats():
     with open(DATA_FILE, 'r') as f:
@@ -21,12 +43,13 @@ def stats():
         "by": "kuri"
     })
 
+# Dashboard đẹp + nút xóa (ẩn danh)
 @app.route('/phuonganh', methods=['GET', 'POST'])
 def phuonganh():
     with open(DATA_FILE, 'r') as f:
         data = json.load(f)
     
-    # Xử lý xóa toàn bộ nếu có POST request
+    # Xử lý xóa toàn bộ
     if request.method == 'POST':
         action = request.form.get('action')
         if action == 'reset':
@@ -43,12 +66,12 @@ def phuonganh():
             </html>
             '''
     
-    # Dashboard đẹp với nút reset
+    # Dashboard HTML
     return f"""
     <!DOCTYPE html>
     <html>
     <head>
-        <title>📊 PhuongAnh Dashboard</title>
+        <title>📊 My girlfriend p.anh</title>
         <style>
             body {{
                 font-family: 'Segoe UI', Arial, sans-serif;
@@ -65,11 +88,7 @@ def phuonganh():
                 margin: auto;
                 box-shadow: 0 10px 40px rgba(0,0,0,0.2);
             }}
-            h1 {{
-                color: #667eea;
-                font-size: 2em;
-                margin-bottom: 10px;
-            }}
+            h1 {{ color: #667eea; font-size: 2em; }}
             .counter {{
                 font-size: 80px;
                 font-weight: bold;
@@ -79,17 +98,8 @@ def phuonganh():
                 border-radius: 15px;
                 padding: 20px;
             }}
-            .by {{
-                color: #ff6b6b;
-                font-style: italic;
-                font-size: 18px;
-                margin: 10px 0;
-            }}
-            .status {{
-                color: green;
-                font-weight: bold;
-                margin: 10px 0;
-            }}
+            .by {{ color: #ff6b6b; font-style: italic; font-size: 18px; }}
+            .status {{ color: green; font-weight: bold; }}
             .reset-btn {{
                 background: #dc3545;
                 color: white;
@@ -99,39 +109,25 @@ def phuonganh():
                 border-radius: 8px;
                 cursor: pointer;
                 margin-top: 20px;
-                transition: 0.3s;
             }}
-            .reset-btn:hover {{
-                background: #c82333;
-                transform: scale(1.05);
-            }}
-            .footer {{
-                font-size: 12px;
-                color: gray;
-                margin-top: 30px;
-            }}
-            hr {{
-                margin: 20px 0;
-            }}
+            .reset-btn:hover {{ background: #c82333; }}
+            .footer {{ font-size: 12px; color: gray; margin-top: 30px; }}
         </style>
     </head>
     <body>
         <div class="container">
-            <h1>📊 Script Execution Tracker</h1>
+            <h1>Script execution check</h1>
             <div class="counter">{data['total']}</div>
             <p>Total Executions</p>
             <p class="status">✅ System Active</p>
             <p class="by">✨ by kuri</p>
-            <hr>
             <form method="POST">
                 <input type="hidden" name="action" value="reset">
                 <button type="submit" class="reset-btn" onclick="return confirm('⚠️ Bạn có chắc muốn XÓA TOÀN BỘ số liệu?')">
                     🗑️ Reset All Data
                 </button>
             </form>
-            <div class="footer">
-                Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-            </div>
+            <div class="footer">Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</div>
         </div>
     </body>
     </html>
@@ -144,8 +140,8 @@ def home():
     return jsonify({
         "message": "Tracking API is running!",
         "endpoints": {
-            "/stats (GET)": "View total executions (JSON)",
-            "/phuonganh (GET)": "View dashboard with reset function"
+            "ditmemay soi cai del j?",
+            "/stats": "View total executions cua hub bo"
         },
         "current_total": data['total'],
         "by": "kuri"
